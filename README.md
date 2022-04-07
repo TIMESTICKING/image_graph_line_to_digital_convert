@@ -25,6 +25,6 @@ what the program does is
 7. smooth filter the points above using `mean filter`.
 8. ***DONE!***
 
-simply run `run_allimgs.m` and wait for the magic appears.
+simply run `run_allimgs.m` and wait for the magic happens.
 
 If u find this repo helps, a star will be the best support.
