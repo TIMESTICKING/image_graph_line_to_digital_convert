@@ -1,4 +1,4 @@
-function [dig_x, dig_y, viz] = imgPlot2digital(imgpath)
+function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant)
     % 提取图片中的曲线数据
     clc;close all
     %% parameters setting
@@ -10,15 +10,17 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath)
     
     step_x = 40;% step of x axis
     step_y = 10;% step of y axis
+
+    thresh_binary = 0.03;
     
     windowSize = 9; %smooth filter size
-    xwant = [min_x + 20 : max_x - 20]; % the range of x-axis that u want
+%     xwant = [min_x + 20 : max_x - 20]; % the range of x-axis that u want
     
     %% 图片与曲线间的定标
     im=imread(imgpath);%读入图片(替换成需要提取曲线的图片)
     im=rgb2gray(im);%灰度变化
     thresh = graythresh(im);%二值化阈值
-    im=im2bw(im,0.01);%二值化
+    im=im2bw(im,thresh_binary);%二值化
     
     % filter lines
     im=reduceLines(im);
@@ -83,7 +85,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath)
     x_uni(find(isnan(y_uni)))=[];
     y_uni(find(isnan(y_uni)))=[];
     %画图
-    figure,plot(x_uni,y_uni),title('经处理后得到的扫描曲线')
+%     figure,plot(x_uni,y_uni),title('经处理后得到的扫描曲线')
     axis([min_x,max_x,min_y,max_y])%根据输入设置坐标范围
     % 将最终提取到的x与y数据保存
     curve_val(1,:)=x_uni';

@@ -9,7 +9,7 @@ end
 
 
 for imf=imgsf'
-    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:5:720]);
+    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:720]);
 
     tt = split(imf.name, '.');
     imgname = tt{1};
@@ -18,7 +18,7 @@ for imf=imgsf'
         mkdir(im_out_dir);
     end
 %     save([im_out_dir 'xy.mat'], "x", "y");
-    xlswrite([im_out_dir 'xy.xlsx'], [x' y']);
+    xls
     saveas(viz, [im_out_dir 'viz.jpg']);
 end
 
