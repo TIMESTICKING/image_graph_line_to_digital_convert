@@ -1,4 +1,4 @@
-function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant)
+function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, find_corner)
     % 提取图片中的曲线数据
     clc;close all
     %% parameters setting
@@ -19,8 +19,12 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant)
     %% 图片与曲线间的定标
     im=imread(imgpath);%读入图片(替换成需要提取曲线的图片)
     im=rgb2gray(im);%灰度变化
+    if find_corner == 1
+        [Xx, Yy] = findCorner(im);
+    end
     thresh = graythresh(im);%二值化阈值
     im=im2bw(im,thresh_binary);%二值化
+
     
     % filter lines
     im=reduceLines(im);
@@ -174,7 +178,19 @@ function [nx,ny]= de_noiser(x,y)
 
 end
 
+function [Xx, Yy] = findCorner(im)
 
+    leftup = [1 1 1 1 1 1 1 1 1 1 1 1 1];
+    zeromy = zeros(1,size(leftup,2) - 1);
+    for foo=[1:size(leftup,2) - 1]
+        leftup = [leftup; [1 zeromy] ];
+    end
+    rightup_filtered=imfilter(im,leftup,'replicate');
+
+    imshow(rightup_filtered);
+    pause
+
+end
 
 
 
