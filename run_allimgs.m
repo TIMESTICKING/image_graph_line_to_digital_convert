@@ -9,7 +9,7 @@ end
 
 
 for imf=imgsf'
-    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:5:720]);
+    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:1:720], 'imclose');
 
     tt = split(imf.name, '.');
     imgname = tt{1};

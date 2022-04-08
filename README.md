@@ -2,7 +2,7 @@
 
 ## results
 
-![1649320296932.png](image/README/IMG_3069.jpeg)
+![1649320296932.png](image/README/IMG_3073.jpeg)
 
 ![1649320612355.png](image/README/1649320612355.png)
 
@@ -14,7 +14,14 @@ the digital form of the points and the preview line graph (like above) will be s
 
 set a few parameters in the head of `imgPlot2digital.m`, also some de_noise related in function `de_noiser()`.
 
-what the program does is
+### linemover mode
+
+There're two modes of removing the grid lines. By setting the formal parameter `linemover` of the function `imgPlot2digital()`, results are shown in above. 
+
+* The `scan` mode is done by setting the `step_x` and `step_y` vars, so when the grid line is covered by the plot line, it'll remove the plot line while removing the grid line.
+* The `imclose` mode is a digital image processing skill, when the plot line is bolder than the grid line, after binarizing the image, the black pixel size in the gird line is smaller than its in the plot line, so by setting the structuring element size we can remove the small black pixels, aka the grid line.
+
+### what the program does
 
 1. convert the image to gray, then binary.
 2. read the "black" pixels and convert them from the image coordinate system to the "coordinate"(the axis in the image) coordinate system.
@@ -24,6 +31,8 @@ what the program does is
 6. do an interpret from the points we have above to obtain the points at x-axis u set.
 7. smooth filter the points above using `mean filter`.
 8. ***DONE!***
+
+### run
 
 simply run `run_allimgs.m` and wait for the magic happens.
 
