@@ -26,9 +26,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_c
     im=imread(imgpath);%读入图片(替换成需要提取曲线的图片)
     im=rgb2gray(im);%灰度变化
     if find_corner == 1
-%         [Xx, Yy] = findCorner(im);
-%         sift_corner(im);
-        harris_corner(im);
+        [Xx, Yy] = findCorner(im);
     end
     thresh = graythresh(im);%二值化阈值
     im=im2bw(im,thresh_binary);%二值化
@@ -229,20 +227,13 @@ end
 
 function sift_corner(im)
 
-    imshow(im);hold on
+    imshow(im);
     points = detectSIFTFeatures(im);
-    plot(points.selectStrongest(50))
-    pause
+    plot(points.selectStrongest(10))
 
 end
 
-function harris_corner(I)
 
-    corners = detectHarrisFeatures(I);
-    imshow(I); hold on;
-    plot(corners.selectStrongest(50));
-
-end
 
 
 
