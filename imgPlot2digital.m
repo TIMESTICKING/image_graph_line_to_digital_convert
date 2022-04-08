@@ -1,4 +1,4 @@
-function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover)
+function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_corner)
     % xwant:        the range of x-axis that u want, a list 
     % linemover:    'scan', 'imclose'
     % 提取图片中的曲线数据
@@ -25,6 +25,9 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover)
     %% 图片与曲线间的定标
     im=imread(imgpath);%读入图片(替换成需要提取曲线的图片)
     im=rgb2gray(im);%灰度变化
+    if find_corner == 1
+        [Xx, Yy] = findCorner(im);
+    end
     thresh = graythresh(im);%二值化阈值
     im=im2bw(im,thresh_binary);%二值化
     [click_y,click_x]=find(im==0);%找出图形中的"黑点"的坐标。该坐标是一维数据。
@@ -193,7 +196,39 @@ function [nx,ny]= de_noiser(x,y)
 
 end
 
+function [Xx, Yy] = findCorner(im)
+    grayim = im;
+    thresh = graythresh(im);%二值化阈值
+    im=im2bw(im,0.2);%二值化
+    se=strel('square',5);     %采用半径为4的矩形作为结构元素
+    im=imclose(im,se);         %开启操作
+%     imshow(im);hold on
 
+    leftup = ones(1,5);
+    zeromy = zeros(1,size(leftup,2) - 1);
+    for foo=[1:size(leftup,2) - 1]
+        leftup = [leftup; [1 zeromy] ];
+    end
+    cp_leftup = -leftup;
+    leftup(3:end,3:end) = cp_leftup(1:end-2,1:end-2);
+    % norm
+    leftup = leftup ./ sum(abs(leftup(:)));
+
+    rightup_filtered=imfilter(im,leftup,'replicate');
+    disp(sum(rightup_filtered(:)));
+    imshow(rightup_filtered + im*0.2);
+%     pause
+    [x,y] = find(rightup_filtered>0);
+%     y=max(y)-y;%将屏幕坐标转换为右手系笛卡尔坐标
+%     y=fliplr(y);%fliplr()——左右翻转数组
+
+%     imshow(rightup_filtered);
+%     scatter(x,y,'r.');
+    grayim(x,y) = 0;
+%     imshow(grayim)
+    pause
+
+end
 
 
 
