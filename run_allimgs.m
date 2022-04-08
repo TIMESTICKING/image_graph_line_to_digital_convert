@@ -1,6 +1,6 @@
 
 imgsf = dir('filter_imgs\*.jpeg');
-output_folder = './outputs/';
+output_folder = './outputs_t/';
 
 
 if ~exist("output_folder", "dir")
@@ -9,7 +9,7 @@ end
 
 
 for imf=imgsf'
-    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:5:720], 0);
+    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:5:720], 1);
 
     tt = split(imf.name, '.');
     imgname = tt{1};

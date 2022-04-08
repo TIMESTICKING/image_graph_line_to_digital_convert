@@ -179,15 +179,35 @@ function [nx,ny]= de_noiser(x,y)
 end
 
 function [Xx, Yy] = findCorner(im)
+    grayim = im;
+    thresh = graythresh(im);%二值化阈值
+    im=im2bw(im,0.2);%二值化
+    se=strel('square',5);     %采用半径为4的矩形作为结构元素
+    im=imclose(im,se);         %开启操作
+%     imshow(im);hold on
 
-    leftup = [1 1 1 1 1 1 1 1 1 1 1 1 1];
+    leftup = ones(1,5);
     zeromy = zeros(1,size(leftup,2) - 1);
     for foo=[1:size(leftup,2) - 1]
         leftup = [leftup; [1 zeromy] ];
     end
-    rightup_filtered=imfilter(im,leftup,'replicate');
+    cp_leftup = -leftup;
+    leftup(3:end,3:end) = cp_leftup(1:end-2,1:end-2);
+    % norm
+    leftup = leftup ./ sum(abs(leftup(:)));
 
-    imshow(rightup_filtered);
+    rightup_filtered=imfilter(im,leftup,'replicate');
+    disp(sum(rightup_filtered(:)));
+    imshow(rightup_filtered + im*0.2);
+%     pause
+    [x,y] = find(rightup_filtered>0);
+%     y=max(y)-y;%将屏幕坐标转换为右手系笛卡尔坐标
+%     y=fliplr(y);%fliplr()——左右翻转数组
+
+%     imshow(rightup_filtered);
+%     scatter(x,y,'r.');
+    grayim(x,y) = 0;
+%     imshow(grayim)
     pause
 
 end
