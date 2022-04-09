@@ -93,6 +93,8 @@ def main(dir, threadsnum=3):
     start('.'.join(all_shot_numbers), 'auto_download_pdfs')
     # make a success list  for matlab
     # todo something make a success list  for matlab
+    print(successed_num)
+    print(failed_num)
 
 
 if __name__ == '__main__':
