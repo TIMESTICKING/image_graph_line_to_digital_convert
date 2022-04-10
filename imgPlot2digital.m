@@ -1,5 +1,5 @@
 function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
-    % xwant:        the range of x-axis that u wanmargs.find_cornert, a list 
+    % xwant:        the range of x-axis that u want, a list 
     % linemover:    'scan', 'imclose', ''
     % 提取图片中的曲线数据
     clc;close all

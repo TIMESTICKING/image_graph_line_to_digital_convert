@@ -15,7 +15,6 @@ args.max_y=100;%max of y axis
 args.step_x = 20;% step of x axis
 args.step_y = 10;% step of y axis
 args.thresh_binary = 0.3;
-args.find_corner = 0;
 args.mark_points = [[0;350], [140;0]]; %mark 2 points [[x1;x2], [y1;y2]] or []
 
 
