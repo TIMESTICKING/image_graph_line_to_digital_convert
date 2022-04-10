@@ -18,15 +18,8 @@ function im_correct = cal_reddot(im, rotate)
     viscircles(centers,radii);
 
     standard_radii = 1.426964514776080e+02;
-    scale_time = standard_radii / radii;
-    im_correct = imresize(im, scale_time);
-    im_correct = im2bw(im_correct(:,:,2),0.4196);%二值化
-    se=strel('square',3);     %采用半径为4的矩形作为结构元素
-    im_correct=imopen(im_correct,se);
+    times_than_standard = radii / standard_radii;
 end
-
-% template left up point:   x,y=1168 1719   x,y=1265 1766
-% template right bottom:    x,y=1752 2304   x,y=1852 2373
 
 
 function [centers,radii]=find_circle(im, sensitive)
