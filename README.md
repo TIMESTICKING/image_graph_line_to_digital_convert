@@ -12,7 +12,7 @@ the digital form of the points and the preview line graph (like above) will be s
 
 ## usage
 
-set a few parameters in the head of `imgPlot2digital.m`, also some de_noise related in function `de_noiser()`.
+set a few parameters `args` in `run_allimgs.m`, also some de_noise related in the head of `imgPlot2digital.m`.
 
 ### linemover mode
 
@@ -20,6 +20,7 @@ There're two modes of removing the grid lines. By setting the formal parameter `
 
 * The `scan` mode is done by setting the `step_x` and `step_y` vars, so when the grid line is covered by the plot line, it'll remove the plot line while removing the grid line.
 * The `imclose` mode is a digital image processing skill, when the plot line is bolder than the grid line, after binarizing the image, the black pixel size in the gird line is smaller than its in the plot line, so by setting the structuring element size we can remove the small black pixels, aka the grid line.
+* Empty char [] stands DO NOT apply grid lines removing algorithm.
 
 ### what the program does
 

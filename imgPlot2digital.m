@@ -1,19 +1,8 @@
-function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_corner)
-    % xwant:        the range of x-axis that u want, a list 
-    % linemover:    'scan', 'imclose'
+function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
+    % xwant:        the range of x-axis that u wanmargs.find_cornert, a list 
+    % linemover:    'scan', 'imclose', ''
     % 提取图片中的曲线数据
     clc;close all
-    %% parameters setting
-    global min_x max_x min_y max_y step_x step_y
-    min_x=340;%min of x axis
-    max_x=740;%max of x axis
-    min_y=0;%min of y axis
-    max_y=100;%max of y axis
-
-    step_x = 40;% step of x axis
-    step_y = 10;% step of y axis
-
-    thresh_binary = 0.2;
     
     windowSize = 9; %smooth filter size
     imclose_size = 5; % used when `linemover` == 'imclose', 
@@ -25,37 +14,41 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_c
     %% 图片与曲线间的定标
     im=imread(imgpath);%读入图片(替换成需要提取曲线的图片)
     im=rgb2gray(im);%灰度变化
-    if find_corner == 1
+    if margs.find_corner == 1
 %         [Xx, Yy] = findCorner(im);
 %         sift_corner(im);
         harris_corner(im);
     end
     thresh = graythresh(im);%二值化阈值
-    im=im2bw(im,thresh_binary);%二值化
+    im=im2bw(im,margs.thresh_binary);%二值化
     [click_y,click_x]=find(im==0);%找出图形中的"黑点"的坐标。该坐标是一维数据。
     click_y=max(click_y)-click_y;%将屏幕坐标转换为右手系笛卡尔坐标
     click_y=fliplr(click_y);%fliplr()——左右翻转数组
-    
+
     % filter lines
     im=reduceLines(im,linemover);
     
     set(0,'defaultfigurecolor','w');
-    figure(156);imshow(im);title('imclosed im');%显示图片
+    figure(156);imshow(im);title('filterd lines im');%显示图片
     [y,x]=find(im==0);%找出图形中的“黑点”的坐标。该坐标是一维数据。
     y=max(y)-y;%将屏幕坐标转换为右手系笛卡尔坐标
     y=fliplr(y);%fliplr()——左右翻转数组
     plot(click_x,click_y,'r.','Markersize', 2);
     disp('click to mark 2 points (left-up, right-bottom) in the figure to location the axis');
-    [Xx,Yy]=ginput(2);%Xx,Yy——指实际坐标框的两个顶点
-    x=(x-Xx(1))*(max_x-min_x)/(Xx(2)-Xx(1))+min_x;
-    y=(y-Yy(1))*(min_y-max_y)/(Yy(2)-Yy(1))+max_y;
+    if size(margs.mark_points,1) == 0
+        [Xx,Yy]=ginput(2);%Xx,Yy——指实际坐标框的两个顶点
+    else
+        Xx=margs.mark_points(:,1);Yy=margs.mark_points(:,2);
+    end
+    x=(x-Xx(1))*(margs.max_x-margs.min_x)/(Xx(2)-Xx(1))+margs.min_x;
+    y=(y-Yy(1))*(margs.min_y-margs.max_y)/(Yy(2)-Yy(1))+margs.max_y;
     oldx = x;oldy = y;
     % reduce xy
-    [x,y]=reduce_xy(x, y,linemover);
-    [x,y]= de_noiser(x,y);
+    [x,y]=reduce_xy(x, y,linemover,margs);
+    [x,y]= de_noiser(x,y,margs);
     
     figure;plot(x,y,'r.','Markersize', 2);
-    axis([min_x,max_x,min_y,max_y])%根据输入设置坐标范围
+    axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
     title('simple pre-processed line scatter')
     
     %% 将散点转换为可用的曲线
@@ -65,7 +58,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_c
     %(3)曲线的最顶端和最底段干扰较大 <---> 去掉曲线整体的上10%和下10%
     
     %参数预设
-    rate_x=0.01;%曲线的最前端和最后段删除比例
+    rate_x=0.00;%曲线的最前端和最后段删除比例
     rate_y=0.00;%曲线的最顶端和最底段删除比例
     
     [x_uni,index_x_uni]=unique(x);%找出有多少个不同的x坐标
@@ -89,9 +82,9 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_c
         ytemp(find(ytemp<threshold1))=[];%删除同一个x对应的一段y中的异常点
         ytemp(find(ytemp>threshold2))=[];
         %删除距顶端和底端较近的点
-        thresholdy=(max_y-min_y)*rate_y;%y坐标向阈值
-        ytemp(find(ytemp>max_y-thresholdy))=[];%删除y轴向距离顶端与底端距离小于rate_y的坐标
-        ytemp(find(ytemp<min_y+thresholdy))=[];
+        thresholdy=(margs.max_y-margs.min_y)*rate_y;%y坐标向阈值
+        ytemp(find(ytemp>margs.max_y-thresholdy))=[];%删除y轴向距离顶端与底端距离小于rate_y的坐标
+        ytemp(find(ytemp<margs.min_y+thresholdy))=[];
         %剩下的y求均值
         y_uni(ii)=mean(ytemp);
     end
@@ -100,7 +93,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_c
     y_uni(find(isnan(y_uni)))=[];
     %画图
 %     figure,plot(x_uni,y_uni),title('经处理后得到的扫描曲线')
-    axis([min_x,max_x,min_y,max_y])%根据输入设置坐标范围
+    axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
     % 将最终提取到的x与y数据保存
     curve_val(1,:)=x_uni';
     curve_val(2,:)=y_uni;
@@ -108,7 +101,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, find_c
     % [p,s]=polyfit(curve_val(1,:),curve_val(2,:),6);%多项式拟合(为避免龙格库塔,多项式拟合阶数不宜太高)
     % [y_fit,DELTA]=polyval(p,x_uni,s);%求拟合后多项式在x_uni对应的y_fit值
     % figure,plot(x_uni,y_fit),title('拟合后的曲线')
-    % axis([min_x,max_x,min_y,max_y])%根据输入设置坐标范围
+    % axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
     
     %% 插值
     y3=interp1(curve_val(1,:),curve_val(2,:),xwant);  
@@ -138,10 +131,9 @@ function im=reduceLines(im,linemover)
     end
 end
 
-function [x,y]=reduce_xy(x, y,linemover)
-    global min_x max_x min_y max_y step_x step_y
+function [x,y]=reduce_xy(x, y,linemover,margs)
     
-    mxs = [min_x:step_x:max_x];
+    mxs = [margs.min_x:margs.step_x:margs.max_x];
     idxs = ((mxs(1)-5) > x) | (x > (mxs(end)+5));
     x(idxs) = [];
     y(idxs) = [];
@@ -154,7 +146,7 @@ function [x,y]=reduce_xy(x, y,linemover)
         end
     end
 
-    mys = [min_y:step_y:max_y];
+    mys = [margs.min_y:margs.step_y:margs.max_y];
     idxs = ((mys(1)-1.3) > y) | (y > (mys(end)+1.3));
     x(idxs) = [];
     y(idxs) = [];
@@ -180,17 +172,16 @@ function [x,y]= de_noiser_per(x,y)
 end
 
 
-function [nx,ny]= de_noiser(x,y)
-    global step_x
+function [nx,ny]= de_noiser(x,y,margs)
 
-    slices = [1:step_x:size(x,1)];
+    slices = [1:margs.step_x:size(x,1)];
     nx = [];
     ny = [];
     for slc=slices
-        if slc+step_x > size(x,1)
+        if slc+margs.step_x > size(x,1)
             [rx,ry] = de_noiser_per(x(slc:end), y(slc:end));
         else
-            [rx,ry] = de_noiser_per(x(slc:slc+step_x), y(slc:slc+step_x));
+            [rx,ry] = de_noiser_per(x(slc:slc+margs.step_x), y(slc:slc+margs.step_x));
         end
         nx = [nx ; rx];
         ny = [ny ; ry];
