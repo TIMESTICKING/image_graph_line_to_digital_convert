@@ -30,11 +30,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     y=fliplr(y);%fliplr()——左右翻转数组
     plot(click_x,click_y,'r.','Markersize', 2);
     disp('click to mark 2 points (left-up, right-bottom) in the figure to location the axis');
-    if size(margs.mark_points,1) == 0
-        [Xx,Yy]=ginput(2);%Xx,Yy——指实际坐标框的两个顶点
-    else
-        Xx=margs.mark_points(:,1);Yy=margs.mark_points(:,2);
-    end
+    [Xx,Yy]=ginput(2);%Xx,Yy——指实际坐标框的两个顶点
     x=(x-Xx(1))*(margs.max_x-margs.min_x)/(Xx(2)-Xx(1))+margs.min_x;
     y=(y-Yy(1))*(margs.min_y-margs.max_y)/(Yy(2)-Yy(1))+margs.max_y;
     oldx = x;oldy = y;
