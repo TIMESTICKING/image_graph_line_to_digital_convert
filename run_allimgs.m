@@ -8,15 +8,15 @@ if ~exist("output_folder", "dir")
 end
 
 
-args.min_x=360;%min of x axis
-args.max_x=760;%max of x axis
+args.min_x=340;%min of x axis
+args.max_x=740;%max of x axis
 args.min_y=0;%min of y axis
 args.max_y=100;%max of y axis
-args.step_x = 20;% step of x axis
+args.step_x = 40;% step of x axis
 args.step_y = 10;% step of y axis
-args.thresh_binary = 0.3;
+args.thresh_binary = 0.03;
 args.find_corner = 0;
-args.mark_points = [[0;350], [140;0]]; %mark 2 points [[x1;x2], [y1;y2]] or []
+args.mark_points = []; %mark 2 points [[x1;x2], [y1;y2]] or []
 
 
 for imf=imgsf'
