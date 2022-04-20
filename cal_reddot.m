@@ -6,13 +6,16 @@ function scale_time = cal_reddot(im, rotate)
 
 
     sensitive = 0.983;
+    [h,w] = size(im);
+    redim = im(int64(h/2):end, :);
     while true
-        [centers,radii]=find_circle(im, sensitive);
+        [centers,radii]=find_circle(redim, sensitive);
         if size(centers, 1) > 1
             sensitive = sensitive - 0.005;
         elseif size(centers, 1) < 1
             sensitive = sensitive + 0.005;
         else
+            centers(2) = centers(2) + h/2;
             break;
         end
     end

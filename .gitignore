@@ -1,3 +1,5 @@
 .idea
 filter_imgs
 output*/
+out*/
+**.jpeg

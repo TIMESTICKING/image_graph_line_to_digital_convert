@@ -20,7 +20,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
         harris_corner(im);
     end
     thresh = graythresh(im);%二值化阈值
-    im=im2bw(im,margs.thresh_binary);%二值化
+    im=im2bw(im,margs.thresh_binary);%二值化 margs.thresh_binary
     [click_y,click_x]=find(im==0);%找出图形中的"黑点"的坐标。该坐标是一维数据。
     click_y=max(click_y)-click_y;%将屏幕坐标转换为右手系笛卡尔坐标
     click_y=fliplr(click_y);%fliplr()——左右翻转数组
@@ -45,7 +45,10 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     oldx = x;oldy = y;
     % reduce xy
     [x,y]=reduce_xy(x, y,linemover,margs);
-    [x,y]= de_noiser(x,y,margs);
+%     multiple denoise
+    [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
+    [x,y]= de_noiser(x,y,int32(margs.step_x));
+    [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
     
     figure;plot(x,y,'r.','Markersize', 2);
     axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
@@ -128,6 +131,8 @@ function im=reduceLines(im,linemover)
     elseif strcmp(linemover, 'imclose')
         se=strel('square',5);     %采用半径为4的矩形作为结构元素
         im=imclose(im,se);         %闭操作
+        seo=strel('square',6);
+        im = 1 - imopen(1-im, seo);
     end
 end
 
@@ -172,16 +177,17 @@ function [x,y]= de_noiser_per(x,y)
 end
 
 
-function [nx,ny]= de_noiser(x,y,margs)
+function [nx,ny]= de_noiser(x,y,stepx)
+%     stepx = int32(margs.step_x / 6);
 
-    slices = [1:margs.step_x:size(x,1)];
+    slices = [1:stepx:size(x,1)];
     nx = [];
     ny = [];
     for slc=slices
-        if slc+margs.step_x > size(x,1)
+        if slc+stepx > size(x,1)
             [rx,ry] = de_noiser_per(x(slc:end), y(slc:end));
         else
-            [rx,ry] = de_noiser_per(x(slc:slc+margs.step_x), y(slc:slc+margs.step_x));
+            [rx,ry] = de_noiser_per(x(slc:slc+stepx), y(slc:slc+stepx));
         end
         nx = [nx ; rx];
         ny = [ny ; ry];
