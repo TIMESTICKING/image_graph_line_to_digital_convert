@@ -77,7 +77,7 @@ def get_plot_fromIMG(imgpath, root, eng):
         'max_y':100.,
         'step_x' : 40,
         'step_y' : 10,
-        'thresh_binary' : 0.7,
+        'thresh_binary' : 0.5,
         'find_corner' : 0,
         'mark_points' : matlab.double([[0.5,614.5],[618.5,0.5]])
     }
