@@ -36,7 +36,10 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     oldx = x;oldy = y;
     % reduce xy
     [x,y]=reduce_xy(x, y,linemover,margs);
-    [x,y]= de_noiser(x,y,margs);
+    [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
+    [x,y]= de_noiser(x,y,int32(margs.step_x));
+    [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
+    [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
     
     figure;plot(x,y,'r.','Markersize', 2);
     axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
@@ -182,16 +185,16 @@ function [x,y]= de_noiser_per(x,y)
 end
 
 
-function [nx,ny]= de_noiser(x,y,margs)
+function [nx,ny]= de_noiser(x,y,stepx)
 
-    slices = [1:margs.step_x:size(x,1)];
+    slices = [1:stepx:size(x,1)];
     nx = [];
     ny = [];
     for slc=slices
-        if slc+margs.step_x > size(x,1)
+        if slc+stepx > size(x,1)
             [rx,ry] = de_noiser_per(x(slc:end), y(slc:end));
         else
-            [rx,ry] = de_noiser_per(x(slc:slc+margs.step_x), y(slc:slc+margs.step_x));
+            [rx,ry] = de_noiser_per(x(slc:slc+stepx), y(slc:slc+stepx));
         end
         nx = [nx ; rx];
         ny = [ny ; ry];
