@@ -45,7 +45,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     oldx = x;oldy = y;
     % reduce xy
     [x,y]=reduce_xy(x, y,linemover,margs);
-%     multiple denoise
+%     multiple scale denoise
     [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
     [x,y]= de_noiser(x,y,int32(margs.step_x));
     [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
