@@ -16,7 +16,7 @@ set a few parameters `args` in `run_allimgs.m`, also some de_noise related in th
 
 ### linemover mode
 
-There're two modes of removing the grid lines. By setting the formal parameter `linemover` of the function `imgPlot2digital()`, results are shown in above. 
+There're two modes of removing the grid lines. By setting the formal parameter `linemover` of the function `imgPlot2digital()`, results are shown in above.
 
 * The `scan` mode is done by setting the `step_x` and `step_y` vars, so when the grid line is covered by the plot line, it'll remove the plot line while removing the grid line.
 * The `imclose` mode is a digital image processing skill, when the plot line is bolder than the grid line, after binarizing the image, the black pixel size in the gird line is smaller than its in the plot line, so by setting the structuring element size we can remove the small black pixels, aka the grid line.
@@ -30,8 +30,9 @@ There're two modes of removing the grid lines. By setting the formal parameter `
 4. drop some points (like remove the grid lines in axis, see in function `reduceLines`, `reduce_xy` and `de_noiser`).
 5. make x-y pairs unique.	***now we have a perfect line plot~***
 6. do an interpret from the points we have above to obtain the points at x-axis u set.
-7. smooth filter the points above using `mean filter`.
-8. ***DONE!***
+7. find the first derivative of the points above and get rid of the values bigger than a threshold (set the formal parameter of function `final_plot_filter()`)
+8. smooth filter the points above using `mean filter`.
+9. ***DONE!***
 
 ### run
 

@@ -96,9 +96,9 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     
     %% 插值
     y3=interp1(curve_val(1,:),curve_val(2,:),xwant);  
-    % filter smooth
-    b = (1/windowSize)*ones(1,windowSize);
-    ywant = imfilter(y3,b,'replicate');
+    figure;plot(xwant,y3),title('unfiltered result')
+%     pick out the insanes and smooth
+    ywant = final_plot_filter(y3, 0.7, windowSize);
     viz = figure(189);
     plot(xwant,ywant),title('final result')
 
@@ -120,6 +120,25 @@ function im=reduceLines(im,linemover)
         se=strel('square',5);     %采用半径为4的矩形作为结构元素
         im=imclose(im,se);         %闭操作
     end
+end
+
+function ywant = final_plot_filter(y, thresh, windowSize)
+    x = [1:length(y)];
+    x_copy = x;
+    dy=y(2:end)-y(1:end-1);
+    
+    args = abs(dy) > thresh;
+%     fill the 0 between the 1s
+    se=strel('rectangle',[1 3]);
+    args=imclose(args,se);
+    y(args) = [];
+    x(args) = [];
+
+%     interpolate
+    y_picked=interp1(x,y,x_copy);
+    % filter smooth
+    b = (1/windowSize)*ones(1,windowSize);
+    ywant = imfilter(y_picked,b,'replicate');
 end
 
 function [x,y]=reduce_xy(x, y,linemover,margs)
