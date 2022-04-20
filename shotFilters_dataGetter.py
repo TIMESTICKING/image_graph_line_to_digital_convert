@@ -77,7 +77,7 @@ def get_plot_fromIMG(imgpath, root, eng):
         'max_y':100.,
         'step_x' : 40,
         'step_y' : 10,
-        'thresh_binary' : 0.5,
+        'thresh_binary' : 0.55,
         'find_corner' : 0,
         'mark_points' : matlab.double([[0.5,614.5],[618.5,0.5]])
     }
@@ -154,7 +154,7 @@ def read_thread(args, imgs, reader):
         # locate the grid, use red_dot and template search
         girded_img = locate_grid(file, im, eng)
         # shrink the 1 channel img again for preview
-        shrinkimg = cv2.resize(file, (170, 300))
+        shrinkimg = cv2.resize(file, (200, 200))
 
         # rewrite the file
         if not os.path.exists(root):

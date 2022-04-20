@@ -1,5 +1,5 @@
 
-imgsf = dir('I:\matlabproj\image_graph_line_to_digital_convert\out2\num_3216\num*');
+imgsf = dir('I:\matlabproj\image_graph_line_to_digital_convert\out2\num_4307\num*');
 output_folder = './outputs_t/';
 
 
@@ -14,7 +14,7 @@ args.min_y=0;%min of y axis
 args.max_y=100;%max of y axis
 args.step_x = 40;% step of x axis
 args.step_y = 10;% step of y axis
-args.thresh_binary = 0.5;
+args.thresh_binary = 0.55;
 args.find_corner = 0;
 args.mark_points = []; %mark 2 points [[x1;x2], [y1;y2]] or []
 
