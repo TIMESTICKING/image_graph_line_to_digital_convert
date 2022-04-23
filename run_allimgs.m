@@ -28,7 +28,7 @@ args.find_corner = 0;
 args.mark_points = [[0;350], [140;0]]; %mark 2 points [[x1;x2], [y1;y2]] or [] 
 
 for imf=imgsf'
-    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:1:720], 'imclose', args);
+    [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:1:720], 'scan', args);
 
     tt = split(imf.name, '.');
     imgname = tt{1};
