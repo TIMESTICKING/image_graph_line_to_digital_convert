@@ -17,6 +17,7 @@ end
 % args.thresh_binary = 0.5;
 % args.find_corner = 0;
 % args.mark_points = []; %mark 2 points [[x1;x2], [y1;y2]] or []
+% args.filter_level = 'small'; % small, medium, large, all
 args.min_x=360;%min of x axis
 args.max_x=760;%max of x axis
 args.min_y=0;%min of y axis
@@ -26,6 +27,8 @@ args.step_y = 10;% step of y axis
 args.thresh_binary = 0.5;
 args.find_corner = 0;
 args.mark_points = [[0;305], [140;0]]; %mark 2 points [[x1;x2], [y1;y2]] or [] 
+args.filter_level = 'small'; % small, medium, large, all
+
 
 for imf=imgsf'
     [x,y,viz]=imgPlot2digital([imf.folder '/' imf.name], [380:1:720], '', args);

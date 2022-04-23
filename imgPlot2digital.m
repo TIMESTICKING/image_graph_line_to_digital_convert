@@ -44,12 +44,8 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     y=(y-Yy(1))*(margs.min_y-margs.max_y)/(Yy(2)-Yy(1))+margs.max_y;
     oldx = x;oldy = y;
     % reduce xy
-    [x,y]=reduce_xy(x, y,linemover,margs, Yy(1));
-%     multiple scale denoise
-%     [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
-    [x,y]= de_noiser(x,y,int32(margs.step_x));
-%     [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
-%     [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
+    [x,y]=reduce_xy(x, y,linemover,margs);
+    [x,y]=de_noiser_pipeline(x,y,margs.filter_level);
     
     figure;plot(x,y,'r.','Markersize', 2);
     axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
@@ -218,6 +214,7 @@ function [nx,ny]= de_noiser(x,y,stepx)
 
 end
 
+
 function [Xx, Yy] = findCorner(im)
     grayim = im;
     thresh = graythresh(im);%二值化阈值
@@ -241,7 +238,6 @@ function [Xx, Yy] = findCorner(im)
     figure;imshow(leftup_filtered + im*0.2);
 %     y=max(y)-y;%将屏幕坐标转换为右手系笛卡尔坐标
 %     y=fliplr(y);%fliplr()——左右翻转数组
-
     figure;scatter(x,y,'r.');
     pause
 
@@ -264,7 +260,18 @@ function harris_corner(I)
 
 end
 
-
+function [x,y]=de_noiser_pipeline(x,y,level)
+    if strcmp(level, 'small') || strcmp(level, 'all')
+        [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
+    end
+    if strcmp(level, 'medium') || strcmp(level, 'all')
+        [x,y]= de_noiser(x,y,int32(margs.step_x));
+        [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
+    end
+    if strcmp(level, 'large') || strcmp(level, 'all')
+        [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
+    end
+end
 
 
 
