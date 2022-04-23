@@ -77,9 +77,10 @@ def get_plot_fromIMG(imgpath, root, eng):
         'max_y':100.,
         'step_x' : 40,
         'step_y' : 10,
-        'thresh_binary' : 0.55,
+        'thresh_binary' : 0.5,
         'find_corner' : 0,
-        'mark_points' : matlab.double([[0.5,614.5],[618.5,0.5]])
+        # 'mark_points' : matlab.double([[0.5,614.5],[618.5,0.5]])
+        'mark_points' : matlab.double([[1.7,601.8],[606.7,1.9]])
     }
     [x, y, viz] = eng.imgPlot2digital(imgpath, matlab.double(list(range(380, 721))), 'imclose', args, nargout=3)
     eng.saveas(viz, f'{root}/xy.jpg', nargout=0)
@@ -127,7 +128,7 @@ def locate_grid(img, filename, eng):
     # rightbottom
     rightbottom_p = match_temp(newimg, rightbottom['rightbottom'], 1, rightbottom['offset_row'], rightbottom['offset_col'])
 
-    newimg = newimg[leftup_p[1]:rightbottom_p[1], leftup_p[0]:rightbottom_p[0]]
+    newimg = newimg[leftup_p[1]:rightbottom_p[1]+5, leftup_p[0]:rightbottom_p[0]]
 
     return newimg[:,:,np.newaxis].repeat(3, axis=2)
 
