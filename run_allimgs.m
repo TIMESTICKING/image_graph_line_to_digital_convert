@@ -15,6 +15,7 @@ args.max_y=100;%max of y axis
 args.step_x = 20;% step of x axis
 args.step_y = 10;% step of y axis
 args.thresh_binary = 0.3;
+args.filter_level = 'small'; % small, medium, large, all
 
 
 

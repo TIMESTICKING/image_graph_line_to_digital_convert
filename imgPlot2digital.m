@@ -36,10 +36,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     oldx = x;oldy = y;
     % reduce xy
     [x,y]=reduce_xy(x, y,linemover,margs);
-    [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
-    [x,y]= de_noiser(x,y,int32(margs.step_x));
-    [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
-    [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
+    [x,y]=de_noiser_pipeline(x,y,margs.filter_level);
     
     figure;plot(x,y,'r.','Markersize', 2);
     axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
@@ -202,7 +199,18 @@ function [nx,ny]= de_noiser(x,y,stepx)
 
 end
 
-
+function [x,y]=de_noiser_pipeline(x,y,level)
+    if strcmp(level, 'small') || strcmp(level, 'all')
+        [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
+    end
+    if strcmp(level, 'medium') || strcmp(level, 'all')
+        [x,y]= de_noiser(x,y,int32(margs.step_x));
+        [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
+    end
+    if strcmp(level, 'large') || strcmp(level, 'all')
+        [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
+    end
+end
 
 
 
