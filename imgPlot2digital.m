@@ -45,7 +45,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     oldx = x;oldy = y;
     % reduce xy
     [x,y]=reduce_xy(x, y,linemover,margs);
-    [x,y]=de_noiser_pipeline(x,y,margs.filter_level);
+    [x,y]=de_noiser_pipeline(x,y,margs);
     
     figure;plot(x,y,'r.','Markersize', 2);
     axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
@@ -109,7 +109,7 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
 %     pick out the insanes and smooth
     ywant = final_plot_filter(y3, 0.7, windowSize);
     viz = figure(189);
-    plot(xwant,ywant),title('final result')
+    plot(xwant,ywant),ylim([margs.min_y margs.max_y]),title('final result')
 
     dig_x = xwant; dig_y = ywant;
 end
@@ -260,7 +260,8 @@ function harris_corner(I)
 
 end
 
-function [x,y]=de_noiser_pipeline(x,y,level)
+function [x,y]=de_noiser_pipeline(x,y,margs)
+    level = margs.filter_level;
     if strcmp(level, 'small') || strcmp(level, 'all')
         [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
     end

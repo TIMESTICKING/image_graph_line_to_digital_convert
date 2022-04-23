@@ -26,8 +26,8 @@ args.step_x = 20;% step of x axis
 args.step_y = 10;% step of y axis
 args.thresh_binary = 0.5;
 args.find_corner = 0;
-args.mark_points = [[0;305], [140;0]]; %mark 2 points [[x1;x2], [y1;y2]] or [] 
-args.filter_level = 'small'; % small, medium, large, all
+args.mark_points = []; %mark 2 points [[x1;x2], [y1;y2]] or [] 
+args.filter_level = 'medium'; % small, medium, large, all
 
 
 for imf=imgsf'
