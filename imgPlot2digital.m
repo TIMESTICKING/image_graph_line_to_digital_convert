@@ -15,8 +15,9 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     im=imread(imgpath);%读入图片(替换成需要提取曲线的图片)
     im=rgb2gray(im);%灰度变化
     thresh = graythresh(im);%二值化阈值
-    im=im2bw(im,margs.thresh_binary);%二值化
-    [click_y,click_x]=find(im==0);%找出图形中的"黑点"的坐标。该坐标是一维数据。
+    im_temp=im2bw(im,0.9);%二值化 margs.thresh_binary
+    [click_y,click_x]=find(im_temp==0);%找出图形中的"黑点"的坐标。该坐标是一维数据。
+    im=im2bw(im,margs.thresh_binary);%二值化 margs.thresh_binary
     click_y=max(click_y)-click_y;%将屏幕坐标转换为右手系笛卡尔坐标
     click_y=fliplr(click_y);%fliplr()——左右翻转数组
 
