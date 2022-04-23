@@ -46,10 +46,10 @@ function [dig_x, dig_y, viz] = imgPlot2digital(imgpath, xwant, linemover, margs)
     % reduce xy
     [x,y]=reduce_xy(x, y,linemover,margs, Yy(1));
 %     multiple scale denoise
-%     [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
+    [x,y]= de_noiser(x,y,int32(margs.step_x / 4));
     [x,y]= de_noiser(x,y,int32(margs.step_x));
-%     [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
-%     [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
+    [x,y]= de_noiser(x,y,int32(margs.step_x) * 2);
+    [x,y]= de_noiser(x,y,int32(margs.step_x) * 6);
     
     figure;plot(x,y,'r.','Markersize', 2);
     axis([margs.min_x,margs.max_x,margs.min_y,margs.max_y])%根据输入设置坐标范围
@@ -173,7 +173,6 @@ function [x,y]=reduce_xy(x, y,linemover,margs, yAxisMax)
         end
     end
 
-%     y_step = yAxisMax * margs.step_y / margs.max_y;
     mys = [margs.min_y:margs.step_y:margs.max_y];
     idxs = ((mys(1)-1.3) > y) | (y > (mys(end)+1.3));
     x(idxs) = [];
